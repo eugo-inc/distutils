@@ -23,7 +23,7 @@ else:
     def removeprefix(self, prefix):
         return self.removeprefix(prefix)
 
-
+      
 def aix_platform(osname, version, release):
     try:
         import _aix_support  # type: ignore
@@ -32,3 +32,4 @@ def aix_platform(osname, version, release):
     except ImportError:
         pass
     return f"{osname}-{version}.{release}"
+
