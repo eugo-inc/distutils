@@ -5,6 +5,8 @@ omit =
 
 	# local
 	*/compat/*
+	*/distutils/_vendor/*
+  
 disable_warnings =
 	couldnt-parse
 

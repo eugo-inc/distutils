@@ -57,11 +57,11 @@ def get_msvcr():
     try:
         msc_ver = int(match.group(1))
     except AttributeError:
-        return
+        return []
     try:
         return _msvcr_lookup[msc_ver]
     except KeyError:
-        raise ValueError("Unknown MS Compiler version %s " % msc_ver)
+        raise ValueError(f"Unknown MS Compiler version {msc_ver} ")
 
 
 _runtime_library_dirs_msg = (
@@ -83,7 +83,7 @@ class CygwinCCompiler(UnixCCompiler):
     dylib_lib_format = "cyg%s%s"
     exe_extension = ".exe"
 
-    def __init__(self, verbose=0, dry_run=0, force=0):
+    def __init__(self, verbose=False, dry_run=False, force=False):
         super().__init__(verbose, dry_run, force)
 
         status, details = check_config_h()
@@ -91,8 +91,8 @@ class CygwinCCompiler(UnixCCompiler):
         if status is not CONFIG_H_OK:
             self.warn(
                 "Python's pyconfig.h doesn't seem to support your compiler. "
-                "Reason: %s. "
-                "Compiling may fail because of undefined preprocessor macros." % details
+                f"Reason: {details}. "
+                "Compiling may fail because of undefined preprocessor macros."
             )
 
         self.cc = os.environ.get('CC', 'gcc')
@@ -166,7 +166,7 @@ class CygwinCCompiler(UnixCCompiler):
         library_dirs=None,
         runtime_library_dirs=None,
         export_symbols=None,
-        debug=0,
+        debug=False,
         extra_preargs=None,
         extra_postargs=None,
         build_temp=None,
@@ -207,10 +207,10 @@ class CygwinCCompiler(UnixCCompiler):
             def_file = os.path.join(temp_dir, dll_name + ".def")
 
             # Generate .def file
-            contents = ["LIBRARY %s" % os.path.basename(output_filename), "EXPORTS"]
+            contents = [f"LIBRARY {os.path.basename(output_filename)}", "EXPORTS"]
             for sym in export_symbols:
                 contents.append(sym)
-            self.execute(write_file, (def_file, contents), "writing %s" % def_file)
+            self.execute(write_file, (def_file, contents), f"writing {def_file}")
 
             # next add options for def-file
 
@@ -277,7 +277,7 @@ class Mingw32CCompiler(CygwinCCompiler):
 
     compiler_type = 'mingw32'
 
-    def __init__(self, verbose=0, dry_run=0, force=0):
+    def __init__(self, verbose=False, dry_run=False, force=False):
         super().__init__(verbose, dry_run, force)
 
         shared_option = "-shared"
